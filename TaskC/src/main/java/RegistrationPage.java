@@ -70,10 +70,46 @@ public class RegistrationPage{
     @FindBy (css = ".alert.alert-danger")
     public WebElement reCaptchaError;
 
+    @FindBy (xpath = "//a[contains(text(),'Please Try Again')]")
+    public WebElement reCaptchaHrefLink;
+
+    @FindBy (css = ".alert.alert-info")
+    public WebElement successfullyRegistered;
+
+    @FindBy (id = "passstrength")
+    public WebElement passwordStrengthNotification;
+
     public void reCaptcha(WebDriver driver){
         driver.switchTo().frame(reCaptchaIframe);
         reCaptchaCheckbox.click();
+        driver.switchTo().parentFrame();
     }
+
+    //region Getters
+    public WebElement getUsernameInput() {
+        return usernameInput;
+    }
+
+    public WebElement getEmailInput() {
+        return emailInput;
+    }
+
+    public WebElement getConfirmEmailInput() {
+        return confirmEmailInput;
+    }
+
+    public WebElement getPasswordInput() {
+        return passwordInput;
+    }
+
+    public WebElement getConfirmPasswordInput() {
+        return confirmPasswordInput;
+    }
+
+    public WebElement getCreateAnAccountButton() {
+        return createAnAccountButton;
+    }
+    //endregion
 
     //region getAttribute
     public String getAttributeUsername(String attribute){

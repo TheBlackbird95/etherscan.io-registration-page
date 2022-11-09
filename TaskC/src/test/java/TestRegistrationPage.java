@@ -1,6 +1,6 @@
 import com.github.javafaker.Faker;
+import org.openqa.selenium.Keys;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -12,11 +12,6 @@ public class TestRegistrationPage extends BaseTest{
     public void pageSetUp(){
         driver.manage().window().maximize();
         driver.navigate().to("https://etherscan.io/register");
-    }
-
-    @BeforeMethod
-    public void refreshPage(){
-        driver.navigate().refresh();
     }
 
     @Test
@@ -56,6 +51,7 @@ public class TestRegistrationPage extends BaseTest{
         registrationPage.agreeWithTermsAndConditions();
         registrationPage.clickCreateAnAccount();
         Assert.assertTrue(registrationPage.reCaptchaError.isDisplayed(), "reCaptcha alert should appear!");
+        registrationPage.reCaptchaHrefLink.click();
     }
 
     @Test
@@ -167,5 +163,41 @@ public class TestRegistrationPage extends BaseTest{
         registrationPage.inputConfirmationPassword(confirmationPassword);
         Assert.assertTrue(registrationPage.confirmPasswordError.isDisplayed());
         Assert.assertEquals(registrationPage.confirmPasswordError.getText(), "Your password must be at least 5 characters long.");
+    }
+
+    @Test
+    public void tabButtonFunctionality(){
+        registrationPage.getUsernameInput().click();
+        registrationPage.getUsernameInput().sendKeys(Keys.TAB);
+        Assert.assertTrue(registrationPage.getEmailInput().isEnabled());
+        Assert.assertTrue(registrationPage.emailError.isDisplayed());
+        registrationPage.getEmailInput().sendKeys(Keys.TAB);
+        Assert.assertTrue(registrationPage.getConfirmEmailInput().isEnabled());
+        Assert.assertTrue(registrationPage.confirmEmailError.isDisplayed());
+        registrationPage.getConfirmEmailInput().sendKeys(Keys.TAB);
+        Assert.assertTrue(registrationPage.passwordError.isDisplayed());
+        Assert.assertTrue(registrationPage.getPasswordInput().isEnabled());
+        registrationPage.getPasswordInput().sendKeys(Keys.TAB);
+        Assert.assertTrue(registrationPage.getConfirmPasswordInput().isEnabled());
+        Assert.assertTrue(registrationPage.confirmPasswordError.isDisplayed());
+    }
+
+    @Test
+    public void passwordStrength(){
+        String weakPassword = "asdqwe";
+        String mediumPassword = "asdqwe123";
+        String strongPassword = "Milos135!";
+
+        registrationPage.inputPassword(weakPassword);
+        Assert.assertTrue(registrationPage.passwordStrengthNotification.isDisplayed());
+        Assert.assertEquals(registrationPage.passwordStrengthNotification.getText(), "Strength: Weak!", "This should be weak password!");
+
+        registrationPage.inputPassword(mediumPassword);
+        Assert.assertTrue(registrationPage.passwordStrengthNotification.isDisplayed());
+        Assert.assertEquals(registrationPage.passwordStrengthNotification.getText(), "Strength: Medium!", "This should be medium password!");
+
+        registrationPage.inputPassword(strongPassword);
+        Assert.assertTrue(registrationPage.passwordStrengthNotification.isDisplayed());
+        Assert.assertEquals(registrationPage.passwordStrengthNotification.getText(), "Strength: Strong!", "This should be strong password!");
     }
 }
